@@ -2,13 +2,15 @@ import frappe
 from frappe import _
 from docx import Document
 from docxtpl import DocxTemplate
+import jinja2
 from io import BytesIO
 
-from frappe.utils import flt
+from frappe.utils import flt, cint
 from frappe.core.utils import html2text
 
 @frappe.whitelist()
 def create_and_download_docx_file(doctype: str, docname: str, word_template: str):
+	
 	data = frappe.get_doc(doctype, docname)
 	data_dict = data.as_dict()
 
@@ -56,14 +58,20 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	frappe.local.response.type = "download"
 
 def _fill_template(template, data):
+	def sum_of_values(value1, value2):
+		return cint(value1) + cint(value2)
+	
 	doc = DocxTemplate(template)
+
+	jinja_env = jinja2.Environment()
+	jinja_env.filters['sum_of_values'] = sum_of_values
 	# pi_doc = frappe.get_doc(data.doctype, data.name)
 	# records = pi_doc.items
 	# data.posting_date = frappe.utils.get_datetime(data.posting_date).strftime('%d %b %Y') 
 	# data["records"] = records
 	# data["pageBreak"] = "\f"
 
-	doc.render(data)
+	doc.render(data, jinja_env)
 	_file = BytesIO()
 	doc.docx.save(_file)
 	return _file
