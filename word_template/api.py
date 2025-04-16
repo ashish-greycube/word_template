@@ -4,8 +4,10 @@ from docx import Document
 from docxtpl import DocxTemplate
 import jinja2
 from io import BytesIO
+import os
+import random
 
-from frappe.utils import flt, cint
+from frappe.utils import flt, cint, cstr
 from frappe.core.utils import html2text
 
 @frappe.whitelist()
@@ -50,14 +52,33 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 		
 	template_doc = frappe.get_doc("File", {"file_url":word_template})
 	template_path = template_doc.get_full_path()
-	output_file = _fill_template(template_path, data_dict)
-	file_name = "-".join([docname, template_doc.file_name])
 
-	frappe.local.response.filename = file_name
-	frappe.local.response.filecontent = output_file.getvalue()
-	frappe.local.response.type = "download"
+	public_file_path = frappe.get_site_path("public", "files")
+	file_name = "-".join([docname+ "-" + cstr(random.randrange(1,10)), template_doc.file_name ])
 
-def _fill_template(template, data):
+	file_url=os.path.join(public_file_path,file_name)
+
+	doc = DocxTemplate(template_path)
+	doc.render(data_dict)
+	doc.save(file_url)
+
+	# frappe.local.response.filename = file_name
+	# frappe.local.response.filecontent = open(file_url, "rb").read()
+	# frappe.local.response.type = "download"	
+	return frappe.utils.get_url()+"/files/"+file_name, file_name
+
+@frappe.whitelist()
+def delete_file(file_name):
+	public_file_path = frappe.get_site_path("public", "files")
+	file_path = os.path.join(public_file_path, file_name)
+
+	if os.path.exists(file_path):
+		os.remove(file_path)
+		return True
+	else:
+		return False
+
+def _fill_template(template, data, file_name):
 	def sum_of_values(value1, value2):
 		return cint(value1) + cint(value2)
 	
@@ -72,6 +93,7 @@ def _fill_template(template, data):
 	# data["pageBreak"] = "\f"
 
 	doc.render(data, jinja_env)
-	_file = BytesIO()
-	doc.docx.save(_file)
-	return _file
+	# _file =  BytesIO()
+	doc.docx.save(file_name)
+	# doc.docx.save(_file)
+	return file_name

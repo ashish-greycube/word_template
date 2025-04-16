@@ -16,14 +16,55 @@ frappe.ui.form.on('Quotation',{
 })
 
 let create_and_download_docx_file = function(frm, word_template) {
-    window.open(
-        `/api/method/word_template.api.create_and_download_docx_file?doctype=${encodeURIComponent(
-            frm.doc.doctype
-        )}&docname=${encodeURIComponent(
-            frm.doc.name
-        )}&word_template=${encodeURIComponent(
-            word_template
-        )}`,
-        "_blank"
-    );
+        if (frm.is_dirty()==true) {
+            frappe.throw({
+                message: __("Please save the form to proceed..."),
+                indicator: "red",
+            });       
+        }
+        return frappe.call({
+            method: "word_template.api.create_and_download_docx_file",
+            args: {
+                doctype: frm.doc.doctype,
+                docname:frm.doc.name,
+                word_template: word_template,
+            },
+            callback: function (r) {
+                console.log(r.message)
+                let file_path = r.message[0]
+                let file_name = r.message[1]
+                function downloadURI(uri, name) 
+                {
+                    var link = document.createElement("a");
+                    // If you don't know the name or want to use
+                    // the webserver default set name = ''
+                    link.setAttribute('download', name);
+                    link.href = uri;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }                    
+                downloadURI(file_path,file_name)
+                frappe.call({
+                    method: "word_template.api.delete_file",
+                    args: {
+                        file_name:file_name
+                    },
+                    callback: function (r) {
+                    console.log(r.message)
+                    }
+                })
+                }
+            })
+
+    // window.open(
+    //     `/api/method/word_template.api.create_and_download_docx_file?doctype=${encodeURIComponent(
+    //         frm.doc.doctype
+    //     )}&docname=${encodeURIComponent(
+    //         frm.doc.name
+    //     )}&word_template=${encodeURIComponent(
+    //         word_template
+    //     )}`,
+    //     "_blank"
+    // ) 
 }

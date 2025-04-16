@@ -1,0 +1,48 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"6_OBN3whCt\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Word Template</span>\",\"col\":12}},{\"id\":\"_s0QxoXE3L\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2025-04-16 16:36:30.677795",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "file-large",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Word Template",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Word Template Settings",
+   "link_count": 0,
+   "link_to": "Word Template Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2025-04-16 16:37:16.199314",
+ "modified_by": "Administrator",
+ "module": "Word Template",
+ "name": "Word Template",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 39.0,
+ "shortcuts": [],
+ "title": "Word Template"
+}
