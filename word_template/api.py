@@ -7,13 +7,23 @@ from io import BytesIO
 import os
 import random
 
-from frappe.utils import flt, cint, cstr
+from frappe.utils import flt, cint, cstr, money_in_words
 from frappe.core.utils import html2text
 
 @frappe.whitelist()
 def create_and_download_docx_file(doctype: str, docname: str, word_template: str):
-	
+
 	data = frappe.get_doc(doctype, docname)
+
+	def _money_in_words(amt, currency=None):
+		amt_value = amt[2:]
+		currency = data.get("currency")
+		amount = money_in_words(flt(amt_value), currency)
+		return amount
+	
+	jinja_env = jinja2.Environment()
+	jinja_env.filters['money_in_words'] = _money_in_words
+	
 	data_dict = data.as_dict()
 
 	for field in data.meta.fields:
@@ -59,7 +69,7 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	file_url=os.path.join(public_file_path,file_name)
 
 	doc = DocxTemplate(template_path)
-	doc.render(data_dict)
+	doc.render(data_dict, jinja_env)
 	doc.save(file_url)
 
 	frappe.local.response.filename = file_name
