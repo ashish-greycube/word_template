@@ -66,13 +66,13 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	frappe.local.response.filecontent = open(file_url, "rb").read()
 	frappe.local.response.type = "download"	
 
-	delete_file(file_name)
+	delete_file(file_url)
 	# return frappe.utils.get_url()+"/files/"+file_name, file_name
 
 @frappe.whitelist()
-def delete_file(file_name):
-	public_file_path = frappe.get_site_path("public", "files")
-	file_path = os.path.join(public_file_path, file_name)
+def delete_file(file_path):
+	# public_file_path = frappe.get_site_path("public", "files")
+	# file_path = os.path.join(public_file_path, file_name)
 
 	if os.path.exists(file_path):
 		os.remove(file_path)
