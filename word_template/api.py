@@ -62,10 +62,12 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	doc.render(data_dict)
 	doc.save(file_url)
 
-	# frappe.local.response.filename = file_name
-	# frappe.local.response.filecontent = open(file_url, "rb").read()
-	# frappe.local.response.type = "download"	
-	return frappe.utils.get_url()+"/files/"+file_name, file_name
+	frappe.local.response.filename = file_name
+	frappe.local.response.filecontent = open(file_url, "rb").read()
+	frappe.local.response.type = "download"	
+
+	delete_file(file_name)
+	# return frappe.utils.get_url()+"/files/"+file_name, file_name
 
 @frappe.whitelist()
 def delete_file(file_name):
