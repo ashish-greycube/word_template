@@ -55,7 +55,6 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 						row_dict[row_field.fieldname] = frappe.format(row.get(row_field.fieldname), {'fieldtype': 'Percent'})
 					if row_field.fieldtype == "Small Text" and row.get(row_field.fieldname):
 						row_text_content = html2text(row.get(row_field.fieldname))
-						print(row_text_content, "=====row_text_content==="*10)
 						row_dict[row_field.fieldname] = row_text_content
 
 				data_dict[field.fieldname].append(row_dict)
@@ -73,7 +72,7 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	file_url=os.path.join(public_file_path,file_name)
 
 	doc = DocxTemplate(template_path)
-	doc.render(data_dict, jinja_env)
+	doc.render(data_dict, jinja_env, autoescape=True)
 	doc.save(file_url)
 
 	frappe.local.response.filename = file_name
