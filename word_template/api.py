@@ -16,10 +16,12 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 	data = frappe.get_doc(doctype, docname)
 
 	def _money_in_words(amt, currency=None):
-		amt_value = amt[2:]
-		currency = data.get("currency")
-		amount = money_in_words(flt(amt_value), currency)
-		return amount
+		if amt:
+			amt_value = amt[2:]
+			currency = data.get("currency")
+			amount = money_in_words(flt(amt_value), currency)
+			return amount
+		else: return ''
 	
 	jinja_env = jinja2.Environment()
 	jinja_env.filters['money_in_words'] = _money_in_words
