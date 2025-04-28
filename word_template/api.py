@@ -14,6 +14,7 @@ from frappe.core.utils import html2text
 def create_and_download_docx_file(doctype: str, docname: str, word_template: str):
 
 	data = frappe.get_doc(doctype, docname)
+	remove_decimal_values = frappe.db.get_single_value('Word Template Settings', 'remove_decimal_values')
 
 	def _money_in_words(amt, currency=None):
 		if amt:
@@ -33,7 +34,13 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 			data_dict[field.fieldname] = frappe.utils.get_datetime(data.get(field.fieldname)).strftime('%d-%m-%Y')
 		if field.fieldtype == "Currency" and data.get(field.fieldname):
 			money = flt(data.get(field.fieldname))
-			data_dict[field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency") )
+			if remove_decimal_values == 1:
+				data_dict[field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency") ).replace('.00', '')
+			else:
+				data_dict[field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency") )
+
+				
+
 		if (field.fieldtype == "Float" or field.fieldtype == "Int") and data.get(field.fieldname):
 			data_dict[field.fieldname] = frappe.format(data.get(field.fieldname), {'fieldtype': 'Float'})
 		if field.fieldtype == "Percent" and data.get(field.fieldname):
@@ -50,7 +57,10 @@ def create_and_download_docx_file(doctype: str, docname: str, word_template: str
 						row_dict[row_field.fieldname] = frappe.utils.get_datetime(row.get(row_field.fieldname)).strftime('%d-%m-%Y')
 					if row_field.fieldtype == "Currency" and row.get(row_field.fieldname):
 						money = flt(row.get(row_field.fieldname))
-						row_dict[row_field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency"))
+						if remove_decimal_values == 1:
+							row_dict[row_field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency")).replace('.00', '')
+						else:
+							row_dict[row_field.fieldname] = frappe.utils.fmt_money(money, currency=data.get("currency"))
 					if (row_field.fieldtype == "Float" or row_field.fieldtype == "Int") and row.get(row_field.fieldname):
 						row_dict[row_field.fieldname] = frappe.format(row.get(row_field.fieldname), {'fieldtype': 'Float'})
 					if row_field.fieldtype == "Percent" and row.get(row_field.fieldname):
