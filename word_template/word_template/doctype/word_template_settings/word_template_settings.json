@@ -8,7 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "doctype_word_template",
-  "remove_decimal_values"
+  "remove_decimal_values",
+  "notes"
  ],
  "fields": [
   {
@@ -22,12 +23,19 @@
    "fieldname": "remove_decimal_values",
    "fieldtype": "Check",
    "label": "Remove Decimal Values From Currency Fields "
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "HTML",
+   "label": "Notes",
+   "options": "<h5>Word Template Instructions:</h5>\n<ul>\n<li>\nTo insert data from the document, write the field name inside double curly braces.<br>\nExample: <code>{{customer}}</code>\n</li>\n\n<li>\nTo display a currency field value in words,\nExample: <code> {{ total|money_in_words()}})</code>\n</li>\n\n<li>\nTo Create Table, <br>\nExample: Item Table\n<br>\n<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\">\n<thead>\n  <tr>\n    <th>No.</th>\n    <th>Item Name</th>\n    <th>Qty</th>\n    <th>Rate</th>\n    <th>Amount</th>\n  </tr>\n</thead>\n<tbody>\n  <tr>\n  <td colspan=\"5\"><code>&lbrace;%tr for item in items %&rbrace;</code></td>\n  </tr>\n  <tr>\n    <td><code>&lbrace;&lbrace;item[\"idx\"]&rbrace;&rbrace;.</code></td>\n    <td><code>&lbrace;&lbrace;item[\"item_code\"]&rbrace;&rbrace;</code></td>\n    <td><code>&lbrace;&lbrace;item[\"qty\"]&rbrace;&rbrace;</code></td>\n    <td><code>&lbrace;&lbrace;item[\"rate\"]&rbrace;&rbrace;</code></td>\n    <td><code>&lbrace;&lbrace;item[\"amount\"]&rbrace;&rbrace;</code></td>\n  </tr>\n  <tr>\n  <td colspan=\"5\"><code>&lbrace;%tr endfor %&rbrace;</code>\n  </td>\n  </tr>\n </tbody>\n</table>\n</li>\n</ul>\n\n\n",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-04-28 15:38:27.555271",
+ "modified": "2025-04-29 11:06:50.793790",
  "modified_by": "Administrator",
  "module": "Word Template",
  "name": "Word Template Settings",
